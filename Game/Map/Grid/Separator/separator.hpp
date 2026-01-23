@@ -8,9 +8,9 @@ public:
 
     bool get_open_state();
 
-    void set_close();
-    void set_open();
-    void set_state_reverse();
+   void set_close();
+   void set_open();
+   void set_state_reverse();
 
     ~Separator() override = default;
 };

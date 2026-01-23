@@ -4,4 +4,7 @@
 class Separator_Vertical : public Separator {
 public:
     Separator_Vertical(int x, int y, bool status);
+
+    void set_Close();
+    void set_Open();
 };

@@ -12,3 +12,13 @@ Separator_Vertical::Separator_Vertical(int x, int y, bool status) : Separator(x,
             this->set_close();
     }
 };
+
+void Separator_Vertical::set_Close() {
+    this->set_close();
+    this->set_visual(Visual::VERTICAL_WALL_CLOSED);
+}
+
+void Separator_Vertical::set_Open() {
+    this->set_open();
+    this->set_visual(Visual::VERTICAL_WALL_OPENED);
+}
