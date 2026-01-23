@@ -1,6 +1,8 @@
 #include "grid.hpp"
 
-Grid::Grid(int x, int y, Visual visual) : _x(x), _y(y), _visual(visual) {};
+Grid::Grid(int x, int y, Visual visual) : _x(x), _y(y), _visual(visual) {
+    this->_id = Grid_Id::GRID;
+};
 
 Visual Grid::get_visual() {
     return this->_visual;
@@ -11,6 +13,9 @@ int Grid::get_x() {
 int Grid::get_y() {
     return this-> _y;
 }
+Grid_Id Grid::get_id() {
+    return this->_id;
+}
 
 void Grid::set_visual(Visual visual) {
     this-> _visual = visual;
@@ -20,6 +25,9 @@ void Grid::set_x(int x) {
 }
 void Grid::set_y(int y) {
     this-> _y = y;
+}
+void Grid::set_id(Grid_Id id) {
+    this->_id = id;
 }
 
 std::string Grid::str_visual() {

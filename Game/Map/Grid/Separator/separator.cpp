@@ -1,6 +1,8 @@
 #include "separator.hpp"
 
-Separator::Separator(int x, int y, Visual visual) : Grid(x, y, visual) {};
+Separator::Separator(int x, int y, Visual visual) : Grid(x, y, visual) {
+    this->set_id(Grid_Id::SEPARATOR);
+};
 
 bool Separator::get_open_state() {
     return this-> _state;

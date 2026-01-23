@@ -2,6 +2,7 @@
 #include "Game/game.hpp"
 
 int main() {
+    srand(time(0));
     Game* game = new Game();
     game->dispay_map();
     game->end_Game();

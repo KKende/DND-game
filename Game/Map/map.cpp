@@ -2,6 +2,8 @@
 #include "Grid/grid.hpp"
 #include "Grid/Moveabale/moveable.hpp"
 #include "Grid/Separator/separator.hpp"
+#include "Grid/Separator/Separator_horizontal/separator_h.hpp"
+#include "Grid/Separator/Separator_vertical/separator_v.hpp"
 
 void clearrow(std::vector<Grid*> &row) {
     for(Grid* g: row) {
@@ -28,30 +30,36 @@ void Map::generate_map() {
         std::vector<Grid*> row;
         for(int x = 0; x < this-> _size-1; x++) {
             row.push_back(new Grid(x, y, Visual::VISUAL_GRID));
-            row.push_back(new Separator(x, y, Visual::HORIZONTAL_WALL_CLOSED));
+            if(y < 1) row.push_back(new Separator_Horizontal(x, y, false));
+            else row.push_back(new Separator_Horizontal(x, y, rand() % 2));
         }
-        row.push_back(new Grid(_size-2 , y, Visual::VISUAL_GRID));
+        row.push_back(new Grid(this->_size -2, y, Visual::VISUAL_GRID));
         this->_map.push_back(row);
         row.clear();
+        
         //row
         for(int x = 0; x < this-> _size-1; x++) {
-            row.push_back(new Separator(x, y, Visual::VERTICAL_WALL_CLOSED));
+            if(x < 1) row.push_back(new Separator_Vertical(x, y, false));
+            else row.push_back(new Separator_Vertical(x, y, rand() % 2));
             row.push_back(new Moveable(x, y, Visual::EMPTY));
         }
-        row.push_back(new Separator(this-> _size-2, y, Visual::VERTICAL_WALL_CLOSED));
+        row.push_back(new Separator_Vertical(this->_size -2, y, false));
         this->_map.push_back(row);
         row.clear();
+
         //if last floor end
         if(y != _size -1) continue;
+
         for(int x = 0; x < this-> _size-1; x++) {
             row.push_back(new Grid(x, y, Visual::VISUAL_GRID));
-            row.push_back(new Separator(x, y, Visual::HORIZONTAL_WALL_CLOSED));
+            row.push_back(new Separator_Horizontal(x, y, false));
         }
-        row.push_back(new Grid(this->_size-2 , y, Visual::VISUAL_GRID));
+        row.push_back(new Grid(this->_size -2, y, Visual::VISUAL_GRID));
         this->_map.push_back(row);
         row.clear();
     }
 }
+
 
 std::string Map::new_name() {
     std::vector<std::string> names;

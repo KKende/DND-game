@@ -3,6 +3,8 @@
 #include "Map/Grid/grid.hpp"
 #include "Map/Grid/Moveabale/moveable.hpp"
 #include "Map/Grid/Separator/separator.hpp"
+#include "Map/Grid/Separator/Separator_horizontal/separator_h.hpp"
+#include "Map/Grid/Separator/Separator_vertical/separator_v.hpp"
 
 Game::Game() {
     this->_current_map = new Map(5);
