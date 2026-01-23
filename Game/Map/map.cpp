@@ -23,8 +23,8 @@ void Map::clear_map() {
 }
 
 void Map::generate_map() {
-    this-> _name = this-> new_name();
-    clear_map();
+    this->_name = this-> new_name();
+    this-> clear_map();
     for(int y = 0; y < this-> _size; y++) {
         //floor
         std::vector<Grid*> row;
@@ -87,17 +87,17 @@ void Map::generate_map() {
 
 std::string Map::new_name() {
     std::vector<std::string> names;
-    std::fstream f("Location_names", std::ios::in);
+    std::fstream f;
+    f.open("ReadFiles/Location_names.txt", std::ios::in);
+    if(!f.is_open()) return "ERROR_FILE";
     std::string line;
-    if(f.is_open()) {
-        while(std::getline(f, line)) {
+    while(std::getline(f, line)) {
         names.push_back(line);
         line.clear();
-        }   
-        f.close();
-        return names[rand() % names.size()];
-    }
-    else return "ERROR";
+    }   
+    f.close();
+    if(names.size() < 1) return "ERROR_EMPTY_VEC";
+    return names[rand() % names.size()];
 }
 
 std::string Map::get_name() {

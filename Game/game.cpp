@@ -7,19 +7,16 @@
 #include "Map/Grid/Separator/Separator_vertical/separator_v.hpp"
 
 Game::Game() {
-    this->_current_map = new Map(5);
-    this->_current_Grid = this->_current_map->get_map()[0][0];
+    this->_current_map = new Map(15);
 }
 
 void Game::dispay_map() {
     int y = 0;
+    std::cout << this->_current_map->get_name() << std::endl;
     for(std::vector<Grid*> row: _current_map->get_map()) {
         int x = 0;
         for(Grid* g: row) {
             std::cout << g->str_visual();
-            if(y == 3 && x == row.size() - 1) {
-                std::cout << "   Selected: X: " << this->_current_Grid->get_x() << " Y: " << this->_current_Grid->get_y();
-            }
             x++;
         }
         std::cout << "\n";

@@ -9,7 +9,6 @@ class Grid;
 class Map;
 
 class Game {
-    Grid* _current_Grid;
     Map* _current_map;
 public:
     Game();
