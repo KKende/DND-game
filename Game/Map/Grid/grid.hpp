@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-enum Visual {
+enum class Visual {
     ENEMY,
     PLAYER,
     CHEST,
@@ -43,5 +43,5 @@ public:
 
     std::string str_visual();
 
-    virtual ~Grid() = default;
+    virtual ~Grid(){};
 };

@@ -7,6 +7,9 @@
 
 void clearrow(std::vector<Grid*> &row) {
     for(Grid* g: row) {
+        if(g->get_id() == Grid_Id::MOVEABLE) {
+            dynamic_cast<Moveable*>(g)->clear_grid_inv();
+        }
         delete g;
     }
     row.clear();
@@ -83,7 +86,6 @@ void Map::generate_map() {
         point = next_point;
     }
 }
-
 
 std::string Map::new_name() {
     std::vector<std::string> names;

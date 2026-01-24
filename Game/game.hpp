@@ -9,6 +9,7 @@ class Grid;
 class Map;
 
 class Game {
+    Player* _player;
     Map* _current_map;
 public:
     Game();
@@ -16,8 +17,9 @@ public:
     void p_move();
     int gridcheck();
     void dispay_map();
-
+    void main_menu();
+    void start_Game();
     void end_Game();
 
-    ~Game(){};
+    ~Game() = default;
 };

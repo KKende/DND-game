@@ -9,6 +9,8 @@ class Moveable : public Grid {
 public:
     Moveable(int x, int y, Visual visual);
     std::vector<Object*>& get_inventory();
+    void auto_set_visual();
+    void clear_grid_inv();
     
     ~Moveable() override = default;
 };
