@@ -8,7 +8,7 @@
 void clearrow(std::vector<Grid*> &row) {
     for(Grid* g: row) {
         if(g->get_id() == Grid_Id::MOVEABLE) {
-            dynamic_cast<Moveable*>(g)->clear_grid_inv();
+            static_cast<Moveable*>(g)->clear_grid_inv();
         }
         delete g;
     }
@@ -73,13 +73,13 @@ void Map::generate_map() {
         int min = std::min(point, next_point);
         for(int x = 0; x < this->_map[y].size(); x++) {
             if(this->_map[y][x]->get_id() == Grid_Id::SEPARATOR_V && (min <= x && x <= max)) {
-                dynamic_cast<Separator_Vertical*>(_map[y][x])->set_Open();
+                static_cast<Separator_Vertical*>(_map[y][x])->set_Open();
             }
         }
 
         for(int x = 0; x < this->_map[y+1].size(); x ++) {
             if(next_point == x) {
-                dynamic_cast<Separator_Horizontal*>(_map[y+1][x])->set_Open();
+                static_cast<Separator_Horizontal*>(_map[y+1][x])->set_Open();
             }
         }
 
