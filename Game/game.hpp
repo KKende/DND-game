@@ -13,8 +13,8 @@ class Game {
     Map* _current_map;
 public:
     Game();
-    int battle(Enemy* enemy);
-    void p_move();
+    int battle(Enemy* &enemy);
+    void p_move(std::string dir);
     int gridcheck();
     void dispay_map();
     void main_menu();

@@ -9,6 +9,10 @@ std::vector<Object*>& Moveable::get_inventory() {
     return this->_inventory;
 }
 
+void Moveable::add_to_inventory(Object *object) {
+    this->_inventory.push_back(object);
+}
+
 void Moveable::auto_set_visual() {
     Id w_on_grid = Id::NONE;
     for(Object* item: this->_inventory) {

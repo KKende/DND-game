@@ -9,6 +9,7 @@ class Moveable : public Grid {
 public:
     Moveable(int x, int y, Visual visual);
     std::vector<Object*>& get_inventory();
+    void add_to_inventory(Object* object);
     void auto_set_visual();
     void clear_grid_inv();
     

@@ -29,14 +29,68 @@ void Game::main_menu() {
     }
 } 
 
+void Game::p_move(std::string dir) {
+    int i = 0;
+    std::vector<Object*> &old_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
+    if(dir == "up" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() -1][this->_player->get_x()])->get_open_state() == true) {
+        static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y() -2][this->_player->get_x()])->add_to_inventory(this->_player);
+        for (Object* item : old_inv) {
+            if(item->get_id() == Id::PLAYER) {
+                old_inv.erase(old_inv.begin() + i);
+                break;
+            }
+            i++;
+        }
+        this->_player->set_cordinates(this->_player->get_x(), this->_player->get_y() -2);
+        this->dispay_map();
+    }
+    else if(dir == "down" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() +1][this->_player->get_x()])->get_open_state() == true) {
+        static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y() +2][this->_player->get_x()])->add_to_inventory(this->_player);
+        for (Object* item : old_inv) {
+            if(item->get_id() == Id::PLAYER) {
+                old_inv.erase(old_inv.begin() + i);
+                break;
+            }
+            i++;
+        }
+        this->_player->set_cordinates(this->_player->get_x(), this->_player->get_y() +2);
+        this->dispay_map();
+    }
+    else if(dir == "right" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +1])->get_open_state() == true) {
+        static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +2])->add_to_inventory(this->_player);
+        for (Object* item : old_inv) {
+            if(item->get_id() == Id::PLAYER) {
+                old_inv.erase(old_inv.begin() + i);
+                break;
+            }
+            i++;
+        }
+        this->_player->set_cordinates(this->_player->get_x() +2,this->_player->get_y());
+        this->dispay_map();
+    }
+    else if(dir == "left" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -1])->get_open_state() == true) {
+        static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -2])->add_to_inventory(this->_player);
+        for (Object* item : old_inv) {
+            if(item->get_id() == Id::PLAYER) {
+                old_inv.erase(old_inv.begin() + i);
+                break;
+            }
+            i++;
+        }
+        this->_player->set_cordinates(this->_player->get_x() -2,this->_player->get_y());
+        this->dispay_map();
+    }
+    else std::cout << "\nnot valid" << std::endl;
+}
+
 void Game::start_Game() {
     system("clear");
     std::string name;
     std::cout << "Name your player: " << std::endl;
     std::getline(std::cin, name);
-    this->_player = new Player(100,100, name, "a basic player");
+    this->_player = new Player(1, 1, 100,100, name, "a basic player");
     this->_current_map = new Map(5);
-    static_cast<Moveable*>(this->_current_map->get_map()[1][1])->get_inventory().push_back(this->_player);
+    static_cast<Moveable*>(this->_current_map->get_map()[1][1])->add_to_inventory(this->_player);
 }
 
 void Game::dispay_map() {

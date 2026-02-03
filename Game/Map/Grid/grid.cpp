@@ -33,17 +33,17 @@ void Grid::set_id(Grid_Id id) {
 std::string Grid::str_visual() {
     switch(this-> _visual) {
         case Visual::CHEST:
-            return "CHT";
+            return "\33[1;33mCHT\033[0m";
         case Visual::EMPTY:
             return "   ";
         case Visual::ENEMY:
-            return "EMY";
+            return "\33[1;31mEMY\033[0m";
         case Visual::HORIZONTAL_WALL_CLOSED:
             return "---";
         case Visual::HORIZONTAL_WALL_OPENED:
             return "   ";
         case Visual::PLAYER:
-            return "PLR";
+            return "\33[1;32mPLR\033[0m";
         case Visual::VERTICAL_WALL_CLOSED:
             return "|";
         case Visual::VERTICAL_WALL_OPENED:
