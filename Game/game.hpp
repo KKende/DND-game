@@ -14,8 +14,8 @@ class Game {
 public:
     Game();
     int battle(Enemy* &enemy);
+    void place_loot();
     void p_move(std::string dir);
-    int gridcheck();
     void dispay_map();
     void main_menu();
     void start_Game();

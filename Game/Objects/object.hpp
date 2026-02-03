@@ -15,7 +15,7 @@ class Object {
     std::string _name;
     std::string _description;
 public:
-    Object(std::string _name, std::string _description);
+    Object(std::string name, std::string description);
 
     Id get_id();
     std::string get_name();

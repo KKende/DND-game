@@ -13,6 +13,17 @@ Game::Game() {
     
 }
 
+void Game::place_loot() {
+    int number_of_loot = rand() % (this->_current_map->get_size() * 2) + 1;
+    for (int i = 0; i < number_of_loot; i++) {
+        int x = rand() % ((this->_current_map->get_size() * 2) - 1);
+        int y = rand() % ((this->_current_map->get_size() * 2) - 1);
+        if(x % 2 == 0) x += 1;
+        if(y % 2 == 0) y += 1;
+        static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Object("rubbish", "it has no value"));
+    }
+}
+
 void Game::main_menu() {
     system("clear");
     std::cout <<"MAIN MENU" << "\n";
@@ -89,11 +100,12 @@ void Game::start_Game() {
     std::cout << "Name your player: " << std::endl;
     std::getline(std::cin, name);
     this->_player = new Player(1, 1, 100,100, name, "a basic player");
-    this->_current_map = new Map(5);
+    this->_current_map = new Map(11);
     static_cast<Moveable*>(this->_current_map->get_map()[1][1])->add_to_inventory(this->_player);
 }
 
 void Game::dispay_map() {
+    std::vector<Object*> &grid_inv = static_cast<Moveable*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
     system("clear");
     int y = 0;
     for(std::vector<Grid*> row: _current_map->get_map()) {
@@ -108,9 +120,25 @@ void Game::dispay_map() {
         if(y == 0) std::cout << " Map name: \33[1;33m" << this->_current_map->get_name() << "\033[0m";
         else if(y == 1) std::cout << " Player name: \033[1;32m" << this->_player->get_name() << "\033[0m";
         else if(y == 2) std::cout << " Player hp: \33[1;31m" << this->_player->get_health() << " / " << this->_player->get_max_health() << "\033[0m";
+        else if(y == 3) std::cout << " Player weapon: \33[1;29m" << "WIP" << "\033[0m";
+        else if (y == 5) std::cout << "\33[1;34m" << " controls" << "\033[0m";
+        else if (y == 6) std::cout << "\33[1;35m " << " 'down' - Down" << "\033[0m";
+        else if (y == 7) std::cout << "\33[1;35m " << " 'up' - Up" << "\033[0m";
+        else if (y == 8) std::cout << "\33[1;35m " << " 'right' - Right" << "\033[0m";
+        else if (y == 9) std::cout << "\33[1;35m " << " 'left' - Left" << "\033[0m";
+        else if (y == 10) std::cout << "\33[1;35m " << " 'exit' - Quit game" << "\033[0m";
+        else if(y == 11) std::cout << "\33[1;36m " << "  To pickup item type the item's number! (WIP)" << "\033[0m";
+        
         std::cout << "\n";
         y++;
     }
+    int i = 0;
+    for(Object* item : grid_inv) {
+            if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
+                std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+            }
+            i++;
+        }
 }
 
 void Game::end_Game() {

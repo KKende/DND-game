@@ -5,6 +5,7 @@ int main() {
     srand(time(0));
     Game* game = new Game();
     game->main_menu();
+    game->place_loot();
     game->dispay_map();
     while (true) {
         std::string usr_inp;

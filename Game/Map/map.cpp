@@ -31,33 +31,33 @@ void Map::generate_map() {
     for(int y = 0; y < this-> _size; y++) {
         //floor
         std::vector<Grid*> row;
-        for(int x = 0; x < this-> _size-1; x++) {
+        for(int x = 0; x < this-> _size; x++) {
             row.push_back(new Grid(x, y, Visual::VISUAL_GRID));
             if(y < 1) row.push_back(new Separator_Horizontal(x, y, false));
             else row.push_back(new Separator_Horizontal(x, y, rand() % 2)); //rand() % 2
         }
-        row.push_back(new Grid(this->_size -2, y, Visual::VISUAL_GRID));
+        row.push_back(new Grid(this->_size -1, y, Visual::VISUAL_GRID));
         this->_map.push_back(row);
         row.clear();
         
         //row
-        for(int x = 0; x < this-> _size-1; x++) {
+        for(int x = 0; x < this-> _size; x++) {
             if(x < 1) row.push_back(new Separator_Vertical(x, y, false));
             else row.push_back(new Separator_Vertical(x, y, rand() % 2)); //rand() % 2
             row.push_back(new Moveable(x, y, Visual::EMPTY));
         }
-        row.push_back(new Separator_Vertical(this->_size -2, y, false));
+        row.push_back(new Separator_Vertical(this->_size -1, y, false));
         this->_map.push_back(row);
         row.clear();
 
         //if last floor end
         if(y != _size -1) continue;
 
-        for(int x = 0; x < this-> _size-1; x++) {
+        for(int x = 0; x < this-> _size; x++) {
             row.push_back(new Grid(x, y, Visual::VISUAL_GRID));
             row.push_back(new Separator_Horizontal(x, y, false));
         }
-        row.push_back(new Grid(this->_size -2, y, Visual::VISUAL_GRID));
+        row.push_back(new Grid(this->_size -1, y, Visual::VISUAL_GRID));
         this->_map.push_back(row);
         row.clear();
     }
