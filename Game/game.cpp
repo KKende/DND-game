@@ -154,20 +154,28 @@ void Game::dispay_map() {
         y++;
     }
     int i = 0;
-    for(Object* item : grid_inv) {
-        if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-            std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+    if(grid_inv.size() > 1) {
+        std::cout << std::endl;
+        std::cout << "\33[1;34m" << "Grid's inventory: " << "\033[0m" <<"\n";
+        for(Object* item : grid_inv) {
+            if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
+                std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+            }
+            i++;
         }
-        i++;
     }
-    std::cout << std::endl;
-    i = 0;
-    for(Object* item : this->_player->get_inventory()) {
-        if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-            std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+    if(this->_player->get_inventory().size() > 0) {
+        std::cout << std::endl;
+        std::cout << "\33[1;32m" << "Your inventory: " << "\033[0m" <<"\n";
+        i = 0;
+        for(Object* item : this->_player->get_inventory()) {
+            if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
+                std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+            }
+            i++;
         }
-        i++;
     }
+    std::cout << "\n" << "\033[1;34m" << "Commands:" << "\033[0m" << std::endl;
 }
 
 void Game::end_Game() {
