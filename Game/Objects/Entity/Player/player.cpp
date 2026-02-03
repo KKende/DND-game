@@ -5,7 +5,7 @@ Player::Player(int x, int y, int health, int max_health, std::string name, std::
     this->set_id(Id::PLAYER);
 };
 
-std::vector<Object*> Player::get_inventory() {
+std::vector<Object*> &Player::get_inventory() {
     return this-> _inventory;
 }
 

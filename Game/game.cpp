@@ -13,6 +13,22 @@ Game::Game() {
     
 }
 
+bool Game::p_pickup(std::string item) {
+    std::vector<Object*> &grid_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
+    int idx;
+    try {
+        idx = std::stoi(item) - 1;
+    }
+    catch (const std::invalid_argument & e){
+        return false;
+    }
+    if(std::stoi(item) < 1 || std::stoi(item) > grid_inv.size()) return false;
+    
+    this->_player->get_inventory().push_back(grid_inv[idx]);
+    grid_inv.erase(grid_inv.begin() + idx);
+    return true;
+}
+
 void Game::place_loot() {
     int number_of_loot = rand() % (this->_current_map->get_size() * 2) + 1;
     for (int i = 0; i < number_of_loot; i++) {
@@ -40,7 +56,7 @@ void Game::main_menu() {
     }
 } 
 
-void Game::p_move(std::string dir) {
+bool Game::p_move(std::string dir) {
     int i = 0;
     std::vector<Object*> &old_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
     if(dir == "up" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() -1][this->_player->get_x()])->get_open_state() == true) {
@@ -54,6 +70,7 @@ void Game::p_move(std::string dir) {
         }
         this->_player->set_cordinates(this->_player->get_x(), this->_player->get_y() -2);
         this->dispay_map();
+        return true;
     }
     else if(dir == "down" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() +1][this->_player->get_x()])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y() +2][this->_player->get_x()])->add_to_inventory(this->_player);
@@ -66,6 +83,7 @@ void Game::p_move(std::string dir) {
         }
         this->_player->set_cordinates(this->_player->get_x(), this->_player->get_y() +2);
         this->dispay_map();
+        return true;
     }
     else if(dir == "right" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +1])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +2])->add_to_inventory(this->_player);
@@ -78,6 +96,7 @@ void Game::p_move(std::string dir) {
         }
         this->_player->set_cordinates(this->_player->get_x() +2,this->_player->get_y());
         this->dispay_map();
+        return true;
     }
     else if(dir == "left" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -1])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -2])->add_to_inventory(this->_player);
@@ -90,8 +109,9 @@ void Game::p_move(std::string dir) {
         }
         this->_player->set_cordinates(this->_player->get_x() -2,this->_player->get_y());
         this->dispay_map();
+        return true;
     }
-    else std::cout << "\nnot valid" << std::endl;
+    else return false;
 }
 
 void Game::start_Game() {

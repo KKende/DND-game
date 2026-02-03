@@ -15,7 +15,8 @@ public:
     Game();
     int battle(Enemy* &enemy);
     void place_loot();
-    void p_move(std::string dir);
+    bool p_pickup(std::string item);
+    bool p_move(std::string dir);
     void dispay_map();
     void main_menu();
     void start_Game();

@@ -9,7 +9,7 @@ class Player : public Entity {
 public:
     Player(int x, int y, int health, int max_health, std::string name, std::string description);
     
-    std::vector<Object*> get_inventory();
+    std::vector<Object*> &get_inventory();
     void delete_inventory();
 
     ~Player() override = default;

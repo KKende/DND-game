@@ -11,7 +11,7 @@ int main() {
         std::string usr_inp;
         std::getline(std::cin, usr_inp);
         if(usr_inp == "exit") break;
-        game->p_move(usr_inp);
+        if(!game->p_pickup(usr_inp) && !game->p_move(usr_inp)) std::cout << "invalid input";
     }
     game->end_Game();
     delete game;
