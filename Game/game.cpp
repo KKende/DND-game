@@ -12,6 +12,35 @@
 Game::Game() { 
 }
 
+void sort(std::vector<Object*>& inventory) {
+    int size = inventory.size();
+    for(int i = 0; i < size - 1; i++) {
+        for(int j = 0; j < size - i - 1; j++) {
+            if(inventory[j+1] < inventory[j]) {
+                Object* temp = inventory[j];
+                inventory[j] = inventory[j+1];
+                inventory[j+1] = temp;
+            }
+        }
+    }
+}
+
+void Game::loop() {
+    bool d_or_p = false;
+    while (true) {
+        std::string usr_inp;
+        std::getline(std::cin, usr_inp);
+        if(usr_inp == "exit") break;
+        if(usr_inp == "switch") {d_or_p = !d_or_p; continue;}
+        if(d_or_p) {
+            if(!this->p_pickup(usr_inp) && !this->p_move(usr_inp)) std::cout << "\033[1;31m" << "Invalid input! \n" << "\033[0m";
+        }
+        else {
+            if(!this->p_drop(usr_inp) && !this->p_move(usr_inp)) std::cout << "\033[1;31m" << "Invalid input! \n" << "\033[0m";
+        }
+    }
+}
+
 bool Game::p_drop(std::string item) {
     std::vector<Object*> &grid_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
     int idx;
@@ -142,6 +171,8 @@ void Game::start_Game() {
 
 void Game::dispay_map() {
     std::vector<Object*> &grid_inv = static_cast<Moveable*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
+    sort(grid_inv);
+    sort(this->_player->get_inventory());
     system("clear");
     int y = 0;
     for(std::vector<Grid*> row: _current_map->get_map()) {

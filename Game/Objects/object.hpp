@@ -25,5 +25,7 @@ public:
     void set_name(std::string name);
     void set_descritpion(std::string description);
 
+    bool operator<(const Object& _id);
+
     virtual ~Object() = default;
 };

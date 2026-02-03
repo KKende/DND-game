@@ -23,3 +23,8 @@ void Object::set_name(std::string name) {
 void Object::set_descritpion(std::string description) {
     this-> _description = description;
 }
+
+bool Object::operator<(const Object& other) {
+    if (this->_id < other._id) return true;
+    else false;
+}

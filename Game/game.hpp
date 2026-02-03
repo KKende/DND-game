@@ -14,6 +14,7 @@ class Game {
 public:
     Game();
     int battle(Enemy* &enemy);
+    void loop();
     void place_loot();
     bool p_pickup(std::string item);
     bool p_drop(std::string item);
