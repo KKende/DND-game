@@ -9,8 +9,23 @@
 #include "Objects/Entity/entity.hpp"
 #include "Objects/Entity/Player/player.hpp"
 
-Game::Game() {
-    
+Game::Game() { 
+}
+
+bool Game::p_drop(std::string item) {
+    std::vector<Object*> &grid_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
+    int idx;
+    try {
+        idx = std::stoi(item) - 1;
+    }
+    catch (const std::invalid_argument & e) {
+        return false;
+    }
+    if(std::stoi(item) < 1 || std::stoi(item) > this->_player->get_inventory().size() || _player->get_inventory()[idx]->get_id() == Id::PLAYER || _player->get_inventory()[idx]->get_id() == Id::ENEMY || _player->get_inventory()[idx]->get_id() == Id::ENTITY) return false;
+    grid_inv.push_back(this->_player->get_inventory()[idx]);
+    this->_player->get_inventory().erase(this->_player->get_inventory().begin() + idx);
+    this->dispay_map();
+    return true;
 }
 
 bool Game::p_pickup(std::string item) {
