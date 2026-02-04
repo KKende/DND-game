@@ -13,7 +13,7 @@ class Game {
     Map* _current_map;
 public:
     Game();
-    int battle(Enemy* &enemy);
+    bool battle();
     void loop();
     void place_loot();
     bool p_pickup(std::string item);

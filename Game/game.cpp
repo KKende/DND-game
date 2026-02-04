@@ -8,6 +8,7 @@
 #include "Objects/object.hpp"
 #include "Objects/Entity/entity.hpp"
 #include "Objects/Entity/Player/player.hpp"
+#include "Objects/Weapon/weapon.hpp"
 
 Game::Game() { 
 }
@@ -77,11 +78,18 @@ bool Game::p_pickup(std::string item) {
 void Game::place_loot() {
     int number_of_loot = rand() % (this->_current_map->get_size() * 2) + 1;
     for (int i = 0; i < number_of_loot; i++) {
+        int weapon = rand() % 3;
         int x = rand() % ((this->_current_map->get_size() * 2) - 1);
         int y = rand() % ((this->_current_map->get_size() * 2) - 1);
         if(x % 2 == 0) x += 1;
         if(y % 2 == 0) y += 1;
-        static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Object("rubbish", "it has no value"));
+        if(weapon == 1) {
+            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Weapon("Test_sword", "a simple sword",Weapon_rarety::EPIC, Weapon_condition::FINE, 30, 100));
+        }
+        else {
+            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Object("rubbish", "it has no value"));
+        }
+        
     }
 }
 
@@ -205,7 +213,8 @@ void Game::dispay_map() {
         std::cout << "\33[1;34m" << "Grid's inventory: " << "\033[0m" <<"\n";
         for(Object* item : grid_inv) {
             if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-                std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
+                else std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
             }
             i++;
         }
@@ -216,7 +225,8 @@ void Game::dispay_map() {
         i = 0;
         for(Object* item : this->_player->get_inventory()) {
             if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-                std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
+                else std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
             }
             i++;
         }

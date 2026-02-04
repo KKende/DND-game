@@ -26,5 +26,5 @@ void Object::set_descritpion(std::string description) {
 
 bool Object::operator<(const Object& other) {
     if (this->_id < other._id) return true;
-    else false;
+    else return false;
 }
