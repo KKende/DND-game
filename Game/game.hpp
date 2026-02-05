@@ -17,6 +17,7 @@ public:
     bool battle();
     void loop();
     void place_loot();
+    bool p_Equip(std::string item);
     bool p_pickup(std::string item);
     bool p_drop(std::string item);
     bool p_move(std::string dir);

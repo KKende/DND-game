@@ -9,6 +9,27 @@
 #include "Objects/Entity/entity.hpp"
 #include "Objects/Entity/Player/player.hpp"
 #include "Objects/Weapon/weapon.hpp"
+#include <sstream>
+
+std::string red(std::string text) {
+    return "\e[0;31m" + text + "\033[0m";
+}
+
+std::string green(std::string text) {
+    return "\e[0;32m" + text + "\033[0m";
+}
+
+std::string blue(std::string text) {
+    return "\e[0;34m" + text + "\033[0m";
+}
+
+std::string yellow(std::string text) {
+    return "\e[0;33m" + text + "\033[0m";
+}
+
+std::string purpule(std::string text) {
+    return "\e[0;35m" + text + "\033[0m";
+}
 
 Game::Game() { 
     this->d_or_p = true;
@@ -31,14 +52,16 @@ void Game::loop() {
     while (true) {
         std::string usr_inp;
         std::getline(std::cin, usr_inp);
+        std::stringstream inp(usr_inp);
+        std::string command_word;
+        std::string action_word;
         if(usr_inp == "exit") break;
-        if(usr_inp == "switch") { this->d_or_p = !this->d_or_p; this->dispay_map(); continue;}
-        if(this->d_or_p) {
-            if(!this->p_pickup(usr_inp) && !this->p_move(usr_inp)) std::cout << "\033[1;31m" << "Invalid input! \n" << "\033[0m";
-        }
-        else {
-            if(!this->p_drop(usr_inp) && !this->p_move(usr_inp)) std::cout << "\033[1;31m" << "Invalid input! \n" << "\033[0m";
-        }
+        if(!(inp >> command_word >> action_word)) {std::cout << red("Invalid Input") << "\n"; continue;}
+
+        if(command_word == "p") { if(!this->p_pickup(action_word)) std::cout << red("Invalid Input") << "\n";}
+        else if (command_word == "d") { if(!this->p_drop(action_word)) std::cout << red("Invalid Input") << "\n";}
+        else if (command_word == "m") {if(!this->p_move(action_word)) std::cout << red("Invalid Input") << "\n";}
+        else std::cout << red("Invalid Input") << "\n";
     }
 }
 
@@ -112,7 +135,7 @@ void Game::main_menu() {
 bool Game::p_move(std::string dir) {
     int i = 0;
     std::vector<Object*> &old_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
-    if(dir == "up" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() -1][this->_player->get_x()])->get_open_state() == true) {
+    if(dir == "u" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() -1][this->_player->get_x()])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y() -2][this->_player->get_x()])->add_to_inventory(this->_player);
         for (Object* item : old_inv) {
             if(item->get_id() == Id::PLAYER) {
@@ -125,7 +148,7 @@ bool Game::p_move(std::string dir) {
         this->dispay_map();
         return true;
     }
-    else if(dir == "down" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() +1][this->_player->get_x()])->get_open_state() == true) {
+    else if(dir == "d" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y() +1][this->_player->get_x()])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y() +2][this->_player->get_x()])->add_to_inventory(this->_player);
         for (Object* item : old_inv) {
             if(item->get_id() == Id::PLAYER) {
@@ -138,7 +161,7 @@ bool Game::p_move(std::string dir) {
         this->dispay_map();
         return true;
     }
-    else if(dir == "right" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +1])->get_open_state() == true) {
+    else if(dir == "r" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +1])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() +2])->add_to_inventory(this->_player);
         for (Object* item : old_inv) {
             if(item->get_id() == Id::PLAYER) {
@@ -151,7 +174,7 @@ bool Game::p_move(std::string dir) {
         this->dispay_map();
         return true;
     }
-    else if(dir == "left" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -1])->get_open_state() == true) {
+    else if(dir == "l" && static_cast<Separator*>(this->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -1])->get_open_state() == true) {
         static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x() -2])->add_to_inventory(this->_player);
         for (Object* item : old_inv) {
             if(item->get_id() == Id::PLAYER) {
@@ -192,49 +215,43 @@ void Game::dispay_map() {
             std::cout << g->str_visual();
             x++;
         }
-        if(y == 0) std::cout << " Map name: \33[1;33m" << this->_current_map->get_name() << "\033[0m";
-        else if(y == 1) std::cout << " Player name: \033[1;32m" << this->_player->get_name() << "\033[0m";
-        else if(y == 2) std::cout << " Player hp: \33[1;31m" << this->_player->get_health() << " / " << this->_player->get_max_health() << "\033[0m";
-        else if(y == 3) std::cout << " Player weapon: \33[1;29m" << "WIP" << "\033[0m";
-        else if (y == 5) std::cout << "\33[1;34m" << " controls" << "\033[0m";
-        else if (y == 6) std::cout << "\33[1;35m " << " 'down' - Down" << "\033[0m";
-        else if (y == 7) std::cout << "\33[1;35m " << " 'up' - Up" << "\033[0m";
-        else if (y == 8) std::cout << "\33[1;35m " << " 'right' - Right" << "\033[0m";
-        else if (y == 9) std::cout << "\33[1;35m " << " 'left' - Left" << "\033[0m";
-        else if (y == 10) std::cout << "\33[1;35m " << " 'exit' - Quit game" << "\033[0m";
-        else if(y == 11) std::cout << "\33[1;35m " << " 'switch' - to switch between to drop or picup item" << "\033[0m";
-        else if(y == 12) std::cout << "\33[1;36m " << " To pickup item type the item's number!" << "\033[0m";
-        
+        if(y == 0) std::cout << " Map name: " << yellow(this->_current_map->get_name());
+        else if(y == 1) std::cout << " Player name: " << green(this->_player->get_name());
+        else if(y == 2) std::cout << " Player hp: " << red(std::to_string(this->_player->get_health()) + " / " + std::to_string(this->_player->get_max_health()));
+        else if(y == 3) std::cout << " Player weapon: " << purpule(this->_player->get_weapon()->get_full_name());
+        else if(y == 4) std::cout << blue(" Commands :");
+        else if(y == 5) std::cout << green(" 'm'") << " - move : " << purpule("'u'") << " - up, " << purpule("'d'") << " - down, " << purpule("'l'") << " - left, " << purpule("'r'") << " - right";
+        else if(y == 6) std::cout << green(" 'p'") << " - pickup + " << purpule("item's number") << " from grid's inventory";
+        else if(y == 7) std::cout << green(" 'm'") << " - drop + "<< purpule("item's number") << " from thy inventory";
+        else if(y == 8) std::cout << green(" 'exit'") <<  " - quit game";
         std::cout << "\n";
         y++;
     }
     int i = 0;
-    if(!this->d_or_p) std::cout << "Currently you are switched to \33[1;31mdrop \033[0mitems \n";
-    else std::cout << "Currently you are switched to \33[1;31mpick up \033[0mitems \n";
     if(grid_inv.size() > 1) {
         std::cout << std::endl;
-        std::cout << "\33[1;34m" << "Grid's inventory: " << "\033[0m" <<"\n";
+        std::cout << blue("Grid inventory: \n");
         for(Object* item : grid_inv) {
             if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;31m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
-                else std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+                if(item->get_id() == Id::WEAPON) std::cout << red(std::to_string(i + 1)) << ". " << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
+                else std::cout << yellow(std::to_string(i + 1)) << ". " << item->get_name() << " ," << item->get_description() << "\n";
             }
             i++;
         }
     }
     if(this->_player->get_inventory().size() > 0) {
         std::cout << std::endl;
-        std::cout << "\33[1;32m" << "Your inventory: " << "\033[0m" <<"\n";
+        std::cout << green("Thy inventory : \n");
         i = 0;
         for(Object* item : this->_player->get_inventory()) {
             if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;31m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
-                else std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+                if(item->get_id() == Id::WEAPON) std::cout << red(std::to_string(i + 1)) << ". " << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
+                else std::cout << yellow(std::to_string(i + 1)) << ". " << item->get_name() << " ," << item->get_description() << "\n";
             }
             i++;
         }
     }
-    std::cout << "\n" << "\033[1;34m" << "Commands:" << "\033[0m" << std::endl;
+    std::cout << "\n" << blue("Commands :") << std::endl;
 }
 
 void Game::end_Game() {
