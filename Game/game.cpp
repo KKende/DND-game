@@ -61,8 +61,33 @@ void Game::loop() {
         if(command_word == "p") { if(!this->p_pickup(action_word)) std::cout << red("Invalid Input") << "\n";}
         else if (command_word == "d") { if(!this->p_drop(action_word)) std::cout << red("Invalid Input") << "\n";}
         else if (command_word == "m") {if(!this->p_move(action_word)) std::cout << red("Invalid Input") << "\n";}
+        else if (command_word == "e") {if(!this->p_equip(action_word))std::cout << red("Invalid Input") << "\n";}
         else std::cout << red("Invalid Input") << "\n";
     }
+}
+
+bool Game::p_equip(std::string item) {
+    int idx;
+    try {
+        idx = std::stoi(item) - 1;
+    }
+    catch (const std::invalid_argument & e) {
+        return false;
+    }
+    if(idx + 1 < 1 || idx + 1 > this->_player->get_inventory().size() || this->_player->get_inventory()[idx]->get_id() != Id::WEAPON) return false;
+    if(this->_player->get_weapon()->get_id() != Id::NONE) {
+        Weapon* temp = this->_player->get_weapon();
+        this->_player->set_hand_slot(static_cast<Weapon*>(this->_player->get_inventory()[idx]));
+        this->_player->get_inventory().erase(this->_player->get_inventory().begin() + idx);
+        this->_player->get_inventory().push_back(temp); 
+    }
+    else {
+        this->_player->delte_hands();
+        this->_player->set_hand_slot(static_cast<Weapon*>(this->_player->get_inventory()[idx]));
+        this->_player->get_inventory().erase(this->_player->get_inventory().begin() + idx);
+    }
+    this->dispay_map();
+    return true;
 }
 
 bool Game::p_drop(std::string item) {
@@ -195,7 +220,7 @@ void Game::start_Game() {
     std::string name;
     std::cout << "Name your player: " << std::endl;
     std::getline(std::cin, name);
-    this->_player = new Player(1, 1, 100,100, name, "a basic player");
+    this->_player = new Player(1, 1, 100,100, name, "a basic player", 125);
     this->_current_map = new Map(11);
     static_cast<Moveable*>(this->_current_map->get_map()[1][1])->add_to_inventory(this->_player);
 }
@@ -217,13 +242,14 @@ void Game::dispay_map() {
         }
         if(y == 0) std::cout << " Map name: " << yellow(this->_current_map->get_name());
         else if(y == 1) std::cout << " Player name: " << green(this->_player->get_name());
-        else if(y == 2) std::cout << " Player hp: " << red(std::to_string(this->_player->get_health()) + " / " + std::to_string(this->_player->get_max_health()));
-        else if(y == 3) std::cout << " Player weapon: " << purpule(this->_player->get_weapon()->get_full_name());
-        else if(y == 4) std::cout << blue(" Commands :");
-        else if(y == 5) std::cout << green(" 'm'") << " - move : " << purpule("'u'") << " - up, " << purpule("'d'") << " - down, " << purpule("'l'") << " - left, " << purpule("'r'") << " - right";
-        else if(y == 6) std::cout << green(" 'p'") << " - pickup + " << purpule("item's number") << " from grid's inventory";
-        else if(y == 7) std::cout << green(" 'm'") << " - drop + "<< purpule("item's number") << " from thy inventory";
-        else if(y == 8) std::cout << green(" 'exit'") <<  " - quit game";
+        else if(y == 2) std::cout << " Hp: " << red(std::to_string(this->_player->get_health()) + " / " + std::to_string(this->_player->get_max_health()));
+        else if(y == 3) std::cout << " Weapon: " << purpule(this->_player->get_weapon()->get_full_name());
+        else if(y == 4) std::cout << " Money: " << yellow(std::to_string(this->_player->get_money())) << " keys";
+        else if(y == 6) std::cout << blue(" Commands :");
+        else if(y == 7) std::cout << green(" 'm'") << " - move : " << purpule("'u'") << " - up, " << purpule("'d'") << " - down, " << purpule("'l'") << " - left, " << purpule("'r'") << " - right";
+        else if(y == 8) std::cout << green(" 'p'") << " - pickup + " << purpule("item's number") << " from grid's inventory";
+        else if(y == 9) std::cout << green(" 'm'") << " - drop + "<< purpule("item's number") << " from thy inventory";
+        else if(y == 10) std::cout << green(" 'exit'") <<  " - quit game";
         std::cout << "\n";
         y++;
     }
