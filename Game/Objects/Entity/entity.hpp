@@ -26,5 +26,5 @@ void set_hand_slot(Weapon *weapon);
 void delte_hands();
 
 
-virtual ~Entity() override = default;
+virtual ~Entity() override;
 };

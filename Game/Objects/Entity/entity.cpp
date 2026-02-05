@@ -39,3 +39,7 @@ void Entity::set_max_health(int max_health) {
 void Entity::set_hand_slot(Weapon* weapon) {
     this->_hands = weapon;
 }
+
+Entity::~Entity() {
+    this->delte_hands();
+}

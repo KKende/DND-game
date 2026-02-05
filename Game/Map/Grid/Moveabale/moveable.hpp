@@ -13,5 +13,5 @@ public:
     void auto_set_visual();
     void clear_grid_inv();
     
-    ~Moveable() override = default;
+    ~Moveable() override;
 };

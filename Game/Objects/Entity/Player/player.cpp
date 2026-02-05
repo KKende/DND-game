@@ -10,9 +10,12 @@ std::vector<Object*> &Player::get_inventory() {
 }
 
 void Player::delete_inventory() {
-    this->delte_hands();
     for(Object* &item: this->_inventory) {
         delete item;
     }
     this->_inventory.clear();
+}
+
+Player::~Player() {
+    this->delete_inventory();
 }

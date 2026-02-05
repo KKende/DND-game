@@ -19,5 +19,5 @@ public:
     std::string new_name();
     void generate_map();
     void clear_map();
-    ~Map() = default;
+    ~Map();
 };

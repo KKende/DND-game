@@ -11,6 +11,7 @@
 #include "Objects/Weapon/weapon.hpp"
 
 Game::Game() { 
+    this->d_or_p = true;
 }
 
 void sort(std::vector<Object*>& inventory) {
@@ -27,13 +28,12 @@ void sort(std::vector<Object*>& inventory) {
 }
 
 void Game::loop() {
-    bool d_or_p = false;
     while (true) {
         std::string usr_inp;
         std::getline(std::cin, usr_inp);
         if(usr_inp == "exit") break;
-        if(usr_inp == "switch") {d_or_p = !d_or_p; continue;}
-        if(d_or_p) {
+        if(usr_inp == "switch") { this->d_or_p = !this->d_or_p; this->dispay_map(); continue;}
+        if(this->d_or_p) {
             if(!this->p_pickup(usr_inp) && !this->p_move(usr_inp)) std::cout << "\033[1;31m" << "Invalid input! \n" << "\033[0m";
         }
         else {
@@ -202,19 +202,22 @@ void Game::dispay_map() {
         else if (y == 8) std::cout << "\33[1;35m " << " 'right' - Right" << "\033[0m";
         else if (y == 9) std::cout << "\33[1;35m " << " 'left' - Left" << "\033[0m";
         else if (y == 10) std::cout << "\33[1;35m " << " 'exit' - Quit game" << "\033[0m";
-        else if(y == 11) std::cout << "\33[1;36m " << "  To pickup item type the item's number! (WIP)" << "\033[0m";
+        else if(y == 11) std::cout << "\33[1;35m " << " 'switch' - to switch between to drop or picup item" << "\033[0m";
+        else if(y == 12) std::cout << "\33[1;36m " << " To pickup item type the item's number!" << "\033[0m";
         
         std::cout << "\n";
         y++;
     }
     int i = 0;
+    if(!this->d_or_p) std::cout << "Currently you are switched to \33[1;31mdrop \033[0mitems \n";
+    else std::cout << "Currently you are switched to \33[1;31mpick up \033[0mitems \n";
     if(grid_inv.size() > 1) {
         std::cout << std::endl;
         std::cout << "\33[1;34m" << "Grid's inventory: " << "\033[0m" <<"\n";
         for(Object* item : grid_inv) {
             if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
-                else std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
+                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;31m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
+                else std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
             }
             i++;
         }
@@ -225,7 +228,7 @@ void Game::dispay_map() {
         i = 0;
         for(Object* item : this->_player->get_inventory()) {
             if(item->get_id() != Id::PLAYER && item->get_id() != Id::ENEMY) {
-                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;32m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
+                if(item->get_id() == Id::WEAPON) std::cout << " \033[1;31m" << i + 1 <<". \033[0m" << static_cast<Weapon*> (item)->get_full_name() << " ," << item->get_description() << "\n";
                 else std::cout << " \033[1;37m" << i + 1 <<". \033[0m" << item->get_name() << " ," << item->get_description() << "\n";
             }
             i++;
@@ -235,7 +238,5 @@ void Game::dispay_map() {
 }
 
 void Game::end_Game() {
-    _player->delete_inventory();
-    _current_map->clear_map();
     delete _current_map;
 }

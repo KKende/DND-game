@@ -11,6 +11,7 @@ class Map;
 class Game {
     Player* _player;
     Map* _current_map;
+    bool d_or_p;
 public:
     Game();
     bool battle();

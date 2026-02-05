@@ -7,9 +7,6 @@
 
 void clearrow(std::vector<Grid*> &row) {
     for(Grid* g: row) {
-        if(g->get_id() == Grid_Id::MOVEABLE) {
-            static_cast<Moveable*>(g)->clear_grid_inv();
-        }
         delete g;
     }
     row.clear();
@@ -110,4 +107,8 @@ std::vector<std::vector<Grid*>>& Map::get_map() {
 }
 int Map::get_size() {
     return this-> _size;
+}
+
+Map::~Map() {
+    this->clear_map();
 }

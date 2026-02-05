@@ -55,3 +55,7 @@ void Moveable::clear_grid_inv() {
     }
     this->_inventory.clear();
 }
+
+Moveable::~Moveable() {
+    this->clear_grid_inv();
+}

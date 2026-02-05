@@ -12,5 +12,5 @@ public:
     std::vector<Object*> &get_inventory();
     void delete_inventory();
 
-    ~Player() override = default;
+    ~Player() override;
 };
