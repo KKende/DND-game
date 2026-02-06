@@ -1,9 +1,9 @@
 #include "entity.hpp"
 #include "../Weapon/weapon.hpp"
 
-Entity::Entity(int x, int y, int health, int max_health, std::string name, std::string description): _x(x), _y(y),
- _health(health), _max_health(max_health), Object(name, description) {
-    this->set_hand_slot(new Weapon("fists", "your hands", Weapon_rarety::RARE, Weapon_condition::FINE, 10, -1)) ;
+Entity::Entity(int x, int y, int max_health, std::string name, std::string description): _x(x), _y(y) , _max_health(max_health), Object(name, description) {
+    this->_health = this->_max_health;
+    this->set_hand_slot(new Weapon("fists", "your hands", Weapon_rarety::RARE, 10, -1)) ;
     this->set_id(Id::ENTITY);
 };
 

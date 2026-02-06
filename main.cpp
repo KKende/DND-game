@@ -5,8 +5,6 @@ int main() {
     srand(time(0));
     Game* game = new Game();
     game->main_menu();
-    game->place_loot();
-    game->dispay_map();
     game->loop();
     game->end_Game();
     delete game;

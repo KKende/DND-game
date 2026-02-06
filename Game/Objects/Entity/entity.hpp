@@ -11,7 +11,7 @@ int _max_health;
 Weapon* _hands;
 
 public:
-Entity(int x, int y, int health, int max_health, std::string name, std::string description);
+Entity(int x, int y, int max_health, std::string name, std::string description);
 
 int get_y();
 int get_x();

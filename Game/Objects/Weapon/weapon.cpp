@@ -1,10 +1,49 @@
 #include "weapon.hpp"
 
-Weapon::Weapon(std::string name, std::string description, Weapon_rarety rarety, Weapon_condition condition, int damage, int durability) 
-: Object(name, description), _rarety(rarety), _condition(condition), _damage(damage), _durability(durability) {
+Weapon::Weapon(std::string name, std::string description, Weapon_rarety rarety, int damage, int durability) 
+: Object(name, description), _rarety(rarety), _damage(damage), _durability(durability) {
+    if(this->_durability > 90){
+        if(_durability > 100)this->_durability = 100;
+        set_condition(Weapon_condition::SHARP);
+    }
+    else if(this->_durability > 80) set_condition(Weapon_condition::FINE);
+    else if(this->_durability > 60) set_condition(Weapon_condition::FAIR);
+    else if(this->_durability > 40) set_condition(Weapon_condition::POOR);
+    else set_condition(Weapon_condition::BROKEN);
     this->set_id(Id::WEAPON);
 }
 
+int Weapon::get_real_damage() {
+    int rarety_boost;
+    int condition_boost;
+    switch(this->_rarety) {
+        case Weapon_rarety::COMMON:
+            rarety_boost = 0;
+        case Weapon_rarety::UNCOMMON:
+            rarety_boost = this->_damage % 4;
+        case Weapon_rarety::RARE:
+            rarety_boost = this->_damage % 3;
+        case Weapon_rarety::EPIC:
+            rarety_boost = this->_damage % 2;
+        case Weapon_rarety::LEGENDARY:
+            rarety_boost = this->_damage;
+        default: rarety_boost = 0 ;
+        }
+    switch(this->_condition) {
+        case Weapon_condition::BROKEN:
+            condition_boost = 0;
+        case Weapon_condition::POOR:
+            condition_boost = this->_damage % 4;
+        case Weapon_condition::FAIR:
+            condition_boost = this->_damage % 3;
+        case Weapon_condition::FINE:
+            condition_boost = this->_damage % 2;
+        case Weapon_condition::SHARP:
+            condition_boost = this->_damage;
+        default: condition_boost = 0 ;
+    }
+    return this->_damage + condition_boost + rarety_boost;
+}
 int Weapon::get_damage() {
     return this->_damage;
 }

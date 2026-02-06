@@ -15,6 +15,7 @@ class Game {
 public:
     Game();
     bool battle();
+    void place_enemy();
     void loop();
     void place_loot();
     bool p_equip(std::string item);

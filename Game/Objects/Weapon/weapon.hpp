@@ -24,8 +24,9 @@ class Weapon : public Object {
     int _damage;
     int _durability;
 public:
-    Weapon(std::string name, std::string description, Weapon_rarety rarety, Weapon_condition condition, int damage, int durability);
+    Weapon(std::string name, std::string description, Weapon_rarety rarety, int damage, int durability);
 
+    int get_real_damage();
     int get_damage();
     int get_durability();
     Weapon_rarety get_rarety();

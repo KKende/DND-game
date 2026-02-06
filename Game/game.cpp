@@ -9,6 +9,9 @@
 #include "Objects/Entity/entity.hpp"
 #include "Objects/Entity/Player/player.hpp"
 #include "Objects/Weapon/weapon.hpp"
+#include "Objects/Weapon/Club/club.hpp" 
+#include "Objects/Entity/Enemy/enemy.hpp"
+#include "Objects/Entity/Enemy/Ork/ork.hpp"
 #include <sstream>
 
 std::string red(std::string text) {
@@ -123,16 +126,33 @@ bool Game::p_pickup(std::string item) {
     return true;
 }
 
-void Game::place_loot() {
-    int number_of_loot = rand() % (this->_current_map->get_size() * 2) + 1;
-    for (int i = 0; i < number_of_loot; i++) {
-        int weapon = rand() % 3;
+void Game::place_enemy() {
+    int number_of_enemy = rand() % (this->_current_map->get_size() * 2) + 1;
+    for (int i = 0; i < number_of_enemy; i++) {
+        int enemy = rand() % 3;
         int x = rand() % ((this->_current_map->get_size() * 2) - 1);
         int y = rand() % ((this->_current_map->get_size() * 2) - 1);
         if(x % 2 == 0) x += 1;
         if(y % 2 == 0) y += 1;
-        if(weapon == 1) {
-            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Weapon("Test_sword", "a simple sword",Weapon_rarety::EPIC, Weapon_condition::FINE, 30, 100));
+        if(enemy == 0) {
+            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Ork(x, y));
+        }
+    }
+}
+
+void Game::place_loot() {
+    int number_of_loot = rand() % (this->_current_map->get_size() * 2) + 1;
+    for (int i = 0; i < number_of_loot; i++) {
+        int weapon = rand() % 4;
+        int x = rand() % ((this->_current_map->get_size() * 2) - 1);
+        int y = rand() % ((this->_current_map->get_size() * 2) - 1);
+        if(x % 2 == 0) x += 1;
+        if(y % 2 == 0) y += 1;
+        if(weapon == 0) {
+            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Weapon("Test_sword", "a simple sword",Weapon_rarety::EPIC, 30, 50));
+        }
+        else if (weapon == 1){
+            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Club());
         }
         else {
             static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Object("rubbish", "it has no value"));
@@ -220,9 +240,12 @@ void Game::start_Game() {
     std::string name;
     std::cout << "Name your player: " << std::endl;
     std::getline(std::cin, name);
-    this->_player = new Player(1, 1, 100,100, name, "a basic player", 125);
+    this->_player = new Player(1, 1,100, name, "a basic player", 125);
     this->_current_map = new Map(11);
     static_cast<Moveable*>(this->_current_map->get_map()[1][1])->add_to_inventory(this->_player);
+    this->place_loot();
+    this->place_enemy();
+    this->dispay_map();
 }
 
 void Game::dispay_map() {
@@ -249,7 +272,8 @@ void Game::dispay_map() {
         else if(y == 7) std::cout << green(" 'm'") << " - move : " << purpule("'u'") << " - up, " << purpule("'d'") << " - down, " << purpule("'l'") << " - left, " << purpule("'r'") << " - right";
         else if(y == 8) std::cout << green(" 'p'") << " - pickup + " << purpule("item's number") << " from grid's inventory";
         else if(y == 9) std::cout << green(" 'm'") << " - drop + "<< purpule("item's number") << " from thy inventory";
-        else if(y == 10) std::cout << green(" 'exit'") <<  " - quit game";
+        else if(y == 10) std::cout << green(" 'e'") << " - equip " << purpule("a weapon") << " from thy inventory";
+        else if(y == 11) std::cout << green(" 'exit'") <<  " - quit game";
         std::cout << "\n";
         y++;
     }
