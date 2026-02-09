@@ -38,6 +38,7 @@ Game::Game() {
     this->d_or_p = true;
 }
 
+
 void sort(std::vector<Object*>& inventory) {
     int size = inventory.size();
     for(int i = 0; i < size - 1; i++) {
@@ -63,9 +64,70 @@ void Game::loop() {
 
         if(command_word == "p") { if(!this->p_pickup(action_word)) std::cout << red("Invalid Input") << "\n";}
         else if (command_word == "d") { if(!this->p_drop(action_word)) std::cout << red("Invalid Input") << "\n";}
-        else if (command_word == "m") {if(!this->p_move(action_word)) std::cout << red("Invalid Input") << "\n";}
+        else if (command_word == "m") {
+            if(!this->p_move(action_word)) std::cout << red("Invalid Input") << "\n";
+            else {
+                int outcome = this->battle();
+                if(outcome == 1) this-> end_Game();
+            }
+        }
         else if (command_word == "e") {if(!this->p_equip(action_word))std::cout << red("Invalid Input") << "\n";}
         else std::cout << red("Invalid Input") << "\n";
+    }
+}
+
+int Game::battle() {
+    std::vector<Object*> &grid_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
+    std::vector<Enemy*> enemies;
+    for(Object* item: grid_inv) {
+        if(item->get_id() == Id::ENEMY) {
+            enemies.push_back(static_cast<Enemy*>(item));
+        }
+    }
+    if(enemies.size() <= 0) return 0;
+    while(true) {
+        //player round
+        if(this->_player->get_attack_ready() == this->_player->get_max_attack_ready()) {
+            std::string usr_in;
+            while(true) {
+                std::cout << "Enter the enemy's number you want to " << red("attack") << ". \n";
+                int idx = 1;
+                for(Enemy* enemy: enemies) {
+                    std::cout << green(std::to_string(idx) + ". ") << red(enemy->get_name() + " ") << yellow(std::to_string(enemy->get_attack_ready()) + "/" + std::to_string(enemy->get_max_attack_ready()));
+                }
+                std::getline(std::cin, usr_in);
+                try {
+                    int int_usr_in = std::stoi(usr_in);
+                    if(int_usr_in > enemies.size() && int_usr_in > 1) continue;
+                    enemies[int_usr_in - 1]->change_health(-this->_player->get_weapon()->get_real_damage());
+                    if(enemies[int_usr_in - 1]->get_health() <= 0) enemies.erase(enemies.begin() + int_usr_in - 1);
+                    this->_player->set_attack_ready(0);
+                    break;
+                }
+                catch(const std::invalid_argument& e) {
+                    std::cout << red("Invalid input") << std::endl;
+                }
+            }
+        }
+        this->_player->change_attack_ready(1);
+        //enemy round
+        for(Enemy* enemy: enemies) {
+            enemy->change_attack_ready(1);
+            if(!(enemy->get_attack_ready() == enemy->get_max_attack_ready())) continue;
+            this->_player->change_health(-enemy->get_weapon()->get_real_damage());
+            enemy->set_attack_ready(0);
+            std::cout << "You got " << red(std::to_string(enemy->get_weapon()->get_real_damage())) << " damage by " << red(enemy->get_name()) << "." << std::endl;
+        }
+        if(this->_player->get_health() <= 0) return 1;
+        if(enemies.size() <= 0) {
+            for(int i = static_cast<int>(grid_inv.size()) - 1; i >= 0; i--) {
+                if(grid_inv[i]->get_id() == Id::ENEMY) {
+                    delete grid_inv[i];
+                    grid_inv.erase(grid_inv.begin() + i);
+                }
+            }
+            return 2;
+        }
     }
 }
 
@@ -240,7 +302,7 @@ void Game::start_Game() {
     std::string name;
     std::cout << "Name your player: " << std::endl;
     std::getline(std::cin, name);
-    this->_player = new Player(1, 1,100, name, "a basic player", 125);
+    this->_player = new Player(1, 1,100, name, "a basic player", 125, 10);
     this->_current_map = new Map(11);
     static_cast<Moveable*>(this->_current_map->get_map()[1][1])->add_to_inventory(this->_player);
     this->place_loot();

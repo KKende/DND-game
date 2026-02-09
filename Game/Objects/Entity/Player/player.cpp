@@ -1,7 +1,7 @@
 #include "player.hpp"
 
-Player::Player(int x, int y, int max_health, std::string name, std::string description, int money) 
-: Entity(x, y, max_health, name, description), _money(money) {
+Player::Player(int x, int y, int max_health, std::string name, std::string description, int money, int max_attack_ready) 
+: Entity(x, y, max_health, name, description, max_attack_ready), _money(money) {
     this->set_id(Id::PLAYER);
 };
 

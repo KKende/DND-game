@@ -2,7 +2,9 @@
 #include "../../../Weapon/weapon.hpp"
 #include "../../../Weapon/Club/club.hpp"
 
-Ork::Ork(int x, int y) : Enemy(x, y, 50, "Ork", "a lizard like creature, an outcast to the human word.", 100) {
+Ork::Ork(int x, int y) : Enemy(x, y, 50, "Ork", "a lizard like creature, an outcast to the human word.", 100, 20) {
+    this->set_attack_ready(0);
+    this->set_class(Enemy_class::Ork);
     this->delte_hands();
     this->set_hand_slot(new Club());
 };

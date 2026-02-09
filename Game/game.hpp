@@ -14,7 +14,7 @@ class Game {
     bool d_or_p;
 public:
     Game();
-    bool battle();
+    int battle();
     void place_enemy();
     void loop();
     void place_loot();

@@ -8,7 +8,7 @@ class Player : public Entity {
     std::vector<Object*> _inventory;
     int _money;
 public:
-    Player(int x, int y, int max_health, std::string name, std::string description, int money);
+    Player(int x, int y, int max_health, std::string name, std::string description, int money, int max_attack_ready);
     
     int& get_money();
 
