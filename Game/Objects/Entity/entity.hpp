@@ -1,5 +1,6 @@
 #pragma once
 #include "../object.hpp"
+#include <vector>
 
 class Weapon;
 
@@ -22,6 +23,7 @@ int get_x();
 int get_health();
 int get_max_health();
 Weapon* get_weapon();
+virtual std::vector<std::string> get_skin();
 
 void change_attack_ready(int amount);
 void change_health(int amount);

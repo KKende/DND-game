@@ -1,0 +1,3 @@
+/home/kkende/Documents/SAVES/C++/DND/Build/CMakeFiles/game.dir
+/home/kkende/Documents/SAVES/C++/DND/Build/CMakeFiles/edit_cache.dir
+/home/kkende/Documents/SAVES/C++/DND/Build/CMakeFiles/rebuild_cache.dir

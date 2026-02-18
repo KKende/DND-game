@@ -64,3 +64,58 @@ void Entity::set_hand_slot(Weapon* weapon) {
 Entity::~Entity() {
     this->delte_hands();
 }
+
+std::vector<std::string> Entity::get_skin() {
+    std::string row1 =  "      _____      ";
+    std::string row2 =  "     /     \\     ";
+    std::string row3 =  "    |___ ___|    ";
+    std::string row4 =  "    |<O> <O>|    ";
+    std::string row5 =  "     \\  V  /     ";
+    std::string row6 =  "  ___/|_-_|\\___  ";
+    std::string row7 =  " /   \\ ___ /   \\ ";
+    std::string row8 =  "|       |       | ";
+    std::string row9 =  "|  |    |    |  | ";
+    std::string row10 = "|  |    |    |  |";
+    std::string row11 = "|  |    |    |  |";
+    std::string row12 = "|  |    |    |  |";
+    std::string row13 = "|  |    |    |  |";
+    std::string row14 = "|  |____|____|  |";
+    std::string row15 = "|  |____|____|  |";
+    std::string row16 = "|  |         |  |";
+    std::string row17 = " \\ |    |    | / ";
+    std::string row18 = "   |    |    |   ";
+    std::string row19 = "   |    |    |   ";
+    std::string row20 = "   |    |    |   ";
+    std::string row21 = "   |    |    |   ";
+    std::string row22 = "   |    |    |   ";
+    std::string row23 = "   |    ||   |   ";
+    std::string row24 = "   |___ | | __|_ ";
+    std::string row25 = "   |___|   |____|";
+    std::vector<std::string> picture;
+    picture.push_back(row1);
+    picture.push_back(row2);
+    picture.push_back(row3);
+    picture.push_back(row4);
+    picture.push_back(row5);
+    picture.push_back(row6);
+    picture.push_back(row7);
+    picture.push_back(row8);
+    picture.push_back(row9);
+    picture.push_back(row10);
+    picture.push_back(row11);
+    picture.push_back(row12);
+    picture.push_back(row13);
+    picture.push_back(row14);
+    picture.push_back(row15);
+    picture.push_back(row16);
+    picture.push_back(row17);
+    picture.push_back(row18);
+    picture.push_back(row19);
+    picture.push_back(row20);
+    picture.push_back(row21);
+    picture.push_back(row22);
+    picture.push_back(row23);
+    picture.push_back(row24);
+    picture.push_back(row25);
+    return picture;
+}

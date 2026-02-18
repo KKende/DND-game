@@ -13,6 +13,7 @@
 #include "Objects/Entity/Enemy/enemy.hpp"
 #include "Objects/Entity/Enemy/Ork/ork.hpp"
 #include <sstream>
+#include <map>
 
 std::string red(std::string text) {
     return "\e[0;31m" + text + "\033[0m";
@@ -68,7 +69,7 @@ void Game::loop() {
             if(!this->p_move(action_word)) std::cout << red("Invalid Input") << "\n";
             else {
                 int outcome = this->battle();
-                if(outcome == 1) this-> end_Game();
+                if(outcome == 1) return;
             }
         }
         else if (command_word == "e") {if(!this->p_equip(action_word))std::cout << red("Invalid Input") << "\n";}
@@ -76,7 +77,20 @@ void Game::loop() {
     }
 }
 
+void battle_visual(std::vector<Enemy*> &enemies, std::string &command_history) {
+    system("clear");
+    for(int i = 0; i < 8; i++) {
+        for(Enemy* enemy : enemies) {
+            std::cout << enemy->get_skin()[i];
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
+    std::cout << command_history;
+}
+
 int Game::battle() {
+    std::string command_history;
     std::vector<Object*> &grid_inv = static_cast<Moveable*>(this ->_current_map->get_map()[this->_player->get_y()][this->_player->get_x()])->get_inventory();
     std::vector<Enemy*> enemies;
     for(Object* item: grid_inv) {
@@ -86,6 +100,7 @@ int Game::battle() {
     }
     if(enemies.size() <= 0) return 0;
     while(true) {
+        battle_visual(enemies, command_history);
         //player round
         if(this->_player->get_attack_ready() == this->_player->get_max_attack_ready()) {
             std::string usr_in;
@@ -93,14 +108,35 @@ int Game::battle() {
                 std::cout << "Enter the enemy's number you want to " << red("attack") << ". \n";
                 int idx = 1;
                 for(Enemy* enemy: enemies) {
-                    std::cout << green(std::to_string(idx) + ". ") << red(enemy->get_name() + " ") << yellow(std::to_string(enemy->get_attack_ready()) + "/" + std::to_string(enemy->get_max_attack_ready()));
+                    std::cout << green(std::to_string(idx) + ". ") << red(enemy->get_name() + " ") << yellow(std::to_string(enemy->get_attack_ready()) + "/" + std::to_string(enemy->get_max_attack_ready()) + "\n");
+                    idx++;
                 }
                 std::getline(std::cin, usr_in);
                 try {
                     int int_usr_in = std::stoi(usr_in);
                     if(int_usr_in > enemies.size() && int_usr_in > 1) continue;
                     enemies[int_usr_in - 1]->change_health(-this->_player->get_weapon()->get_real_damage());
-                    if(enemies[int_usr_in - 1]->get_health() <= 0) enemies.erase(enemies.begin() + int_usr_in - 1);
+                    command_history += red(enemies[int_usr_in - 1]->get_name()) + " got " + yellow(std::to_string(this->_player->get_weapon()->get_real_damage())) + " damage. \n";
+                    if(enemies[int_usr_in - 1]->get_health() <= 0) {
+                        command_history += red(enemies[int_usr_in - 1]->get_name()) + " got has died. \n";
+                        enemies.erase(enemies.begin() + int_usr_in - 1);
+                        for(Object* &item: grid_inv) {
+                            if(item->get_id() == Id::ENEMY) {
+                                if(static_cast<Enemy*>(item)->get_health() <= 0) {
+                                    delete item;
+                                    item = nullptr;
+                                }
+                            }
+                        }
+                        for(std::vector<Object*>::iterator item = grid_inv.begin(); item != grid_inv.end();) {
+                            if(*item == nullptr) {
+                                grid_inv.erase(item);
+                            }
+                            else {
+                                item++;
+                            }
+                        }
+                    } 
                     this->_player->set_attack_ready(0);
                     break;
                 }
@@ -116,16 +152,14 @@ int Game::battle() {
             if(!(enemy->get_attack_ready() == enemy->get_max_attack_ready())) continue;
             this->_player->change_health(-enemy->get_weapon()->get_real_damage());
             enemy->set_attack_ready(0);
-            std::cout << "You got " << red(std::to_string(enemy->get_weapon()->get_real_damage())) << " damage by " << red(enemy->get_name()) << "." << std::endl;
+            command_history += "You got " + red(std::to_string(enemy->get_weapon()->get_real_damage())) + " damage by " + red(enemy->get_name()) + ". \n";
         }
-        if(this->_player->get_health() <= 0) return 1;
+        if(this->_player->get_health() <= 0) {
+            return 1;
+        };
         if(enemies.size() <= 0) {
-            for(int i = static_cast<int>(grid_inv.size()) - 1; i >= 0; i--) {
-                if(grid_inv[i]->get_id() == Id::ENEMY) {
-                    delete grid_inv[i];
-                    grid_inv.erase(grid_inv.begin() + i);
-                }
-            }
+            system("clear");
+            dispay_map();
             return 2;
         }
     }
@@ -197,6 +231,7 @@ void Game::place_enemy() {
         if(x % 2 == 0) x += 1;
         if(y % 2 == 0) y += 1;
         if(enemy == 0) {
+            static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Ork(x, y));
             static_cast<Moveable*>(_current_map->get_map()[y][x])->add_to_inventory(new Ork(x, y));
         }
     }
@@ -302,7 +337,7 @@ void Game::start_Game() {
     std::string name;
     std::cout << "Name your player: " << std::endl;
     std::getline(std::cin, name);
-    this->_player = new Player(1, 1,100, name, "a basic player", 125, 10);
+    this->_player = new Player(1, 1, 100, name, "a basic player", 125, 10);
     this->_current_map = new Map(11);
     static_cast<Moveable*>(this->_current_map->get_map()[1][1])->add_to_inventory(this->_player);
     this->place_loot();
@@ -333,7 +368,7 @@ void Game::dispay_map() {
         else if(y == 6) std::cout << blue(" Commands :");
         else if(y == 7) std::cout << green(" 'm'") << " - move : " << purpule("'u'") << " - up, " << purpule("'d'") << " - down, " << purpule("'l'") << " - left, " << purpule("'r'") << " - right";
         else if(y == 8) std::cout << green(" 'p'") << " - pickup + " << purpule("item's number") << " from grid's inventory";
-        else if(y == 9) std::cout << green(" 'm'") << " - drop + "<< purpule("item's number") << " from thy inventory";
+        else if(y == 9) std::cout << green(" 'd'") << " - drop + "<< purpule("item's number") << " from thy inventory";
         else if(y == 10) std::cout << green(" 'e'") << " - equip " << purpule("a weapon") << " from thy inventory";
         else if(y == 11) std::cout << green(" 'exit'") <<  " - quit game";
         std::cout << "\n";
